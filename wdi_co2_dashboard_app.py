@@ -1,13 +1,7 @@
 import pandas as pd
-import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
-from sklearn.compose import ColumnTransformer
-from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import OneHotEncoder, StandardScaler
-from sklearn.model_selection import train_test_split
-from sklearn.ensemble import RandomForestRegressor
 
 st.set_page_config(
     page_title="WDI CO2 Efficiency Dashboard",
@@ -109,105 +103,29 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 @st.cache_data
-def load_and_prepare_data(wdi_path: str, country_path: str):
-    df = pd.read_csv(wdi_path)
-    country_df = pd.read_csv(country_path)
+def load_data():
+    df_model = pd.read_parquet("dashboard_data.parquet")
 
-    year_cols = [col for col in df.columns if str(col).isdigit()]
-
-    df_long = df.melt(
-        id_vars=["Country Name", "Country Code", "Indicator Name", "Indicator Code"],
-        value_vars=year_cols,
-        var_name="Year",
-        value_name="Value"
-    )
-    df_long["Year"] = df_long["Year"].astype(int)
-
-    indicators = [
-        "NY.GDP.PCAP.CD",
-        "EN.ATM.CO2E.PC",
-        "SP.POP.TOTL"
-    ]
-
-    df_small = df_long[df_long["Indicator Code"].isin(indicators)].copy()
-
-    df_ml = df_small.pivot_table(
-        index=["Country Name", "Country Code", "Year"],
-        columns="Indicator Code",
-        values="Value"
-    ).reset_index()
-    df_ml.columns.name = None
-
-    df_ml = df_ml.merge(
-        country_df[["Country Code", "Region", "Income Group"]],
-        on="Country Code",
-        how="left"
-    )
-
-    df_ml = df_ml.rename(columns={
+    # اگر فایل parquet با اسم ستون‌های خام ذخیره شده باشد، اینجا rename می‌کنیم
+    rename_map = {
         "NY.GDP.PCAP.CD": "gdp_per_capita",
         "EN.ATM.CO2E.PC": "co2_per_capita",
         "SP.POP.TOTL": "population"
-    })
+    }
+    df_model = df_model.rename(columns=rename_map)
 
-    df_ml["log_gdp"] = np.log1p(df_ml["gdp_per_capita"])
-    df_ml["log_co2"] = np.log1p(df_ml["co2_per_capita"])
-    df_ml["log_pop"] = np.log1p(df_ml["population"])
+    # اگر efficiency_label داخل فایل نبود، بساز
+    if "efficiency_label" not in df_model.columns and "residual" in df_model.columns:
+        df_model["efficiency_label"] = df_model["residual"].apply(
+            lambda x: "Better than expected" if x < 0 else "Worse than expected"
+        )
 
-    model_df = df_ml[[
-        "Country Name", "Country Code", "Year", "Region", "Income Group",
-        "gdp_per_capita", "co2_per_capita", "population",
-        "log_gdp", "log_co2", "log_pop"
-    ]].dropna().copy()
-
-    X = model_df[["log_gdp", "log_pop", "Year", "Income Group", "Region"]]
-    y = model_df["log_co2"]
-
-    X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.2, random_state=42
-    )
-
-    numeric_features = ["log_gdp", "log_pop", "Year"]
-    categorical_features = ["Income Group", "Region"]
-
-    preprocessor = ColumnTransformer(
-        transformers=[
-            ("num", StandardScaler(), numeric_features),
-            ("cat", OneHotEncoder(handle_unknown="ignore"), categorical_features)
-        ]
-    )
-
-    rf_model = Pipeline(steps=[
-        ("preprocessor", preprocessor),
-        ("model", RandomForestRegressor(
-            n_estimators=100,
-            max_depth=10,
-            random_state=42,
-            n_jobs=-1
-        ))
-    ])
-
-    rf_model.fit(X_train, y_train)
-    model_df["predicted_log_co2"] = rf_model.predict(X)
-    model_df["residual"] = model_df["log_co2"] - model_df["predicted_log_co2"]
-    model_df["efficiency_label"] = np.where(
-        model_df["residual"] < 0,
-        "Better than expected",
-        "Worse than expected"
-    )
-
-    return model_df, rf_model
-
-
-with st.sidebar:
-    st.header("Data Files")
-    wdi_path = st.text_input("Path to WDIData.csv", value="WDIData.csv")
-    country_path = st.text_input("Path to WDICountry.csv", value="WDICountry.csv")
+    return df_model
 
 try:
-    df_model, rf_model = load_and_prepare_data(wdi_path, country_path)
+    df_model = load_data()
 except Exception as e:
-    st.error(f"Could not load the files. Check the file paths. Error: {e}")
+    st.error(f"Could not load dashboard_data.parquet. Error: {e}")
     st.stop()
 
 with st.sidebar:
@@ -287,8 +205,7 @@ fig_map.update_layout(
         lakecolor="#0f172a"
     ),
     coloraxis_colorbar=dict(
-        title=dict(text="Residual"),
-        tickfont=dict(color="#e5e7eb")
+        title=dict(text="Residual")
     ),
     transition_duration=450
 )
@@ -328,9 +245,7 @@ with left:
         plot_bgcolor="rgba(0,0,0,0)",
         xaxis_title="Log GDP per capita",
         yaxis_title="Log CO2 per capita",
-        coloraxis_colorbar=dict(
-            title=dict(text="Residual")
-        ),
+        coloraxis_colorbar=dict(title=dict(text="Residual")),
         transition_duration=450
     )
 
