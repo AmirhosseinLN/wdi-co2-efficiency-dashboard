@@ -1,21 +1,31 @@
-**WDI CO2 Efficiency Dashboard**
+# WDI CO2 Efficiency Dashboard
 
-This project analyzes CO2 emissions using World Development Indicators data.
+This project analyzes CO2 emissions using World Development Indicators data and builds an interactive Streamlit dashboard to compare countries based on emissions efficiency.
 
-**_Features_**
-
+## Features
 - CO2 efficiency analysis using machine learning
-- Interactive dashboard (Streamlit)
-- GDP vs CO2 relationship
-- Country-level comparison
+- Interactive dashboard built with Streamlit
+- GDP vs CO2 relationship analysis
+- Country-level comparison over time
+- Residual-based identification of efficient and inefficient emitters
 
-**_Files_**
+## Project Files
+- `wdi_co2_dashboard_app.py` → interactive dashboard
+- `WDI_dashboard_project.ipynb` → analysis notebook
+- `requirements.txt` → required Python libraries
 
-- wdi_co2_dashboard_app.py → dashboard
-- WDI_dashboard_project.ipynb → analysis
-- WDIData.csv, WDICountry.csv → data
+## Data Source
+The dataset used in this project comes from Kaggle:
 
-**Author**
+World Development Indicators  
+https://www.kaggle.com/datasets/theworldbank/world-development-indicators
 
+### Files used
+- `WDIData.csv`
+- `WDICountry.csv`
+
+Because of GitHub file size limits, the raw dataset is not included in this repository.
+
+## Author
 Amirhossein Latifi Navid  
-https://www.linkedin.com/in/amirhossein-latifinavid-5923272a7
+LinkedIn: https://www.linkedin.com/in/amirhossein-latifinavid-5923272a7
