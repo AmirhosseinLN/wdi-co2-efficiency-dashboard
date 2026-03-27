@@ -5,3 +5,6 @@ __pycache__/
 .env
 .venv/WDIData.csv
 WDICountry.csv
+WDIData.csv
+.virtual_documents/
+*.ipynb.ipynb
