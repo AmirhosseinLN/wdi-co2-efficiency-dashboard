@@ -34,6 +34,12 @@ A Random Forest model is used to estimate expected emissions, and the difference
 - `dashboard_data.parquet` → prepared dashboard dataset
 - `requirements.txt` → required dependencies
 
+## Project Report
+
+Full project report is available here:
+
+[View Report (PDF)](./AmirhosseinLN_CO2analyse.pdf)
+
 ## Data Source
 
 World Development Indicators dataset from the World Bank:
