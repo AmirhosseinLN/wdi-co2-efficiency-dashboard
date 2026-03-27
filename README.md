@@ -36,17 +36,29 @@ A Random Forest model is used to estimate expected emissions, and the difference
 
 ## Data Source
 
-World Development Indicators dataset from Kaggle:
+World Development Indicators dataset from the World Bank:
 
 https://www.kaggle.com/datasets/theworldbank/world-development-indicators
 
-Raw source files used in the analysis:
-- `WDIData.csv`
-- `WDICountry.csv`
+Note: Raw datasets are not included in the repository due to file size limitations.
 
-These raw files are not included in the deployed version because of GitHub file size limitations.
+## Technologies Used
+
+- Python
+- Pandas
+- NumPy
+- Scikit-learn
+- Plotly
+- Streamlit
+
+## Key Insights
+
+- Income level is a strong predictor of emissions behavior
+- Some high-income countries are significantly more efficient than expected
+- Certain resource-dependent economies exhibit persistent over-emission
+- Efficiency varies not only across countries but also over time
 
 ## Author
 
 Amirhossein Latifi Navid  
-[LinkedIn](https://www.linkedin.com/in/amirhossein-latifinavid-5923272a7)
+LinkedIn: https://www.linkedin.com/in/amirhossein-latifinavid-5923272a7
