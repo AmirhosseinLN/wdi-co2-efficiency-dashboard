@@ -1,31 +1,52 @@
 # WDI CO2 Efficiency Dashboard
 
-This project analyzes CO2 emissions using World Development Indicators data and builds an interactive Streamlit dashboard to compare countries based on emissions efficiency.
+An interactive Streamlit dashboard for analyzing CO2 emissions efficiency across countries using World Development Indicators data.
+
+## Live Demo
+
+[Open the dashboard](https://wdi-co2-efficiency-dashboard-javpthbtu9xmq2rkzgayxx.streamlit.app/)
+
+## Project Overview
+
+This project evaluates whether countries emit more or less CO2 than expected based on:
+
+- GDP per capita
+- Population
+- Year
+- Income group
+- Region
+
+A Random Forest model is used to estimate expected emissions, and the difference between actual and predicted emissions is used as a residual-based efficiency measure.
 
 ## Features
-- CO2 efficiency analysis using machine learning
-- Interactive dashboard built with Streamlit
-- GDP vs CO2 relationship analysis
-- Country-level comparison over time
-- Residual-based identification of efficient and inefficient emitters
+
+- Global country-level CO2 efficiency map
+- GDP vs CO2 scatter plot
+- Top 10 best and worst performers
+- Detailed country table
+- Country-level time trend comparison
+- Interactive filters by year, region, and income group
 
 ## Project Files
-- `wdi_co2_dashboard_app.py` → interactive dashboard
+
+- `wdi_co2_dashboard_app.py` → Streamlit dashboard
 - `WDI_dashboard_project.ipynb` → analysis notebook
-- `requirements.txt` → required Python libraries
+- `dashboard_data.parquet` → prepared dashboard dataset
+- `requirements.txt` → required dependencies
 
 ## Data Source
-The dataset used in this project comes from Kaggle:
 
-World Development Indicators  
+World Development Indicators dataset from Kaggle:
+
 https://www.kaggle.com/datasets/theworldbank/world-development-indicators
 
-### Files used
+Raw source files used in the analysis:
 - `WDIData.csv`
 - `WDICountry.csv`
 
-Because of GitHub file size limits, the raw dataset is not included in this repository.
+These raw files are not included in the deployed version because of GitHub file size limitations.
 
 ## Author
+
 Amirhossein Latifi Navid  
-LinkedIn: https://www.linkedin.com/in/amirhossein-latifinavid-5923272a7
+[LinkedIn](https://www.linkedin.com/in/amirhossein-latifinavid-5923272a7)
